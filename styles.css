@@ -227,16 +227,34 @@ body {
 }
 
 .toast {
+    position: fixed;
     background-color: #34495e;
     color: white;
-    padding: 12px 24px;
+    padding: 8px 16px;
     border-radius: 4px;
-    margin-top: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     display: flex;
     align-items: center;
-    animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s;
-    opacity: 0;
+    pointer-events: none; /* Prevent toast from intercepting clicks */
+    animation: popAndFloat 1.5s ease-out forwards;
+}
+
+@keyframes popAndFloat {
+    0% {
+        transform: translate(-50%, 0) scale(0.8);
+        opacity: 0;
+    }
+    15% {
+        transform: translate(-50%, -10px) scale(1.1);
+        opacity: 1;
+    }
+    30% {
+        transform: translate(-50%, -20px) scale(1);
+    }
+    100% {
+        transform: translate(-50%, -50px) scale(0.9);
+        opacity: 0;
+    }
 }
 
 .toast.health-effect {
@@ -251,12 +269,41 @@ body {
     border-left: 4px solid #e74c3c;
 }
 
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+/* Add age bar styles */
+.age-bar {
+    background-color: #2c3e50;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-} 
+.age-label {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.age-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3498db;  /* Blue color for age */
+}
+
+/* Add occupation bar styles */
+.occupation-bar {
+    background-color: #2c3e50;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.occupation-label {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.occupation-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #e67e22;  /* Orange color for occupation */
+}
+ 

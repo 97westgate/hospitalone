@@ -88,6 +88,12 @@ class Game {
         this.choiceABtn.disabled = true;
         this.choiceBBtn.disabled = true;
         this.choiceCBtn.disabled = true;
+        
+        // Add age initialization
+        this.age = GAME_CONSTANTS.INITIAL_AGE;
+        
+        // Add occupation initialization
+        this.occupation = GAME_CONSTANTS.INITIAL_OCCUPATION;
     }
 
     initializeElements() {
@@ -100,6 +106,8 @@ class Game {
         this.choiceBBtn = document.getElementById('choiceB');
         this.choiceCBtn = document.getElementById('choiceC');
         this.insuranceDisplay = document.getElementById('insuranceValue');
+        this.ageDisplay = document.getElementById('ageValue');
+        this.occupationDisplay = document.getElementById('occupationValue');
     }
 
     setupEventListeners() {
@@ -388,13 +396,30 @@ class Game {
     startDecay() {
         if (this.decayStarted) return;
         
-        this.healthDecayInterval = setInterval(() => {
-            this.updateHealth(-1, true);
-        }, 500); // Health decay every 0.5 seconds
+        // Base decay interval is 500ms
+        const updateHealthDecay = () => {
+            // Calculate health decay rate based on age
+            // Every 10 years after 18 increases decay rate by 20%
+            const ageEffect = Math.max(0, this.age - 18) / 10;
+            const healthDecayAmount = -1 * (1 + (ageEffect * 0.2));
+            
+            this.updateHealth(healthDecayAmount, true);
+        };
+        
+        this.healthDecayInterval = setInterval(updateHealthDecay, 500);
         
         this.moneyDecayInterval = setInterval(() => {
             this.updateMoney(-1, true);
-        }, 1000); // Money decay every 1 second
+        }, 1000);
+
+        this.ageDecayInterval = setInterval(() => {
+            this.updateAge(+1);
+            // Recalculate health decay when age changes
+            if (this.healthDecayInterval) {
+                clearInterval(this.healthDecayInterval);
+                this.healthDecayInterval = setInterval(updateHealthDecay, 500);
+            }
+        }, 10000);
         
         this.decayStarted = true;
     }
@@ -440,6 +465,16 @@ class Game {
             button.textContent = action.text;
             moneyButtonsContainer.appendChild(button);
         });
+
+        // Add age label
+        document.querySelector('.age-label').textContent = GAME_CONSTANTS.UI.LABELS.AGE;
+        
+        // Set initial age value
+        this.ageDisplay.textContent = GAME_CONSTANTS.UI.INITIAL_VALUES.AGE;
+        
+        // Add occupation label and value
+        document.querySelector('.occupation-label').textContent = GAME_CONSTANTS.UI.LABELS.OCCUPATION;
+        this.occupationDisplay.textContent = GAME_CONSTANTS.UI.INITIAL_VALUES.OCCUPATION;
     }
 
     showToast(message, type = 'info', button = null) {
@@ -448,26 +483,36 @@ class Game {
         toast.textContent = message;
         
         if (button) {
-            // Position toast next to the button
+            // Position toast above the button
             const buttonRect = button.getBoundingClientRect();
             toast.style.position = 'fixed';
-            toast.style.left = `${buttonRect.right + 10}px`; // 10px to the right of button
-            toast.style.top = `${buttonRect.top}px`; // Align with button top
+            toast.style.left = `${buttonRect.left + (buttonRect.width / 2)}px`; // Center above button
+            toast.style.top = `${buttonRect.top - 10}px`; // Slightly above button
         }
         
         document.body.appendChild(toast);
         
-        // Force a reflow to trigger animation
-        toast.offsetHeight;
-        toast.style.opacity = '1';
-        
-        // Remove the toast after animation
+        // Remove the toast after animation completes
         setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => {
-                document.body.removeChild(toast);
-            }, 500);
-        }, 3000);
+            document.body.removeChild(toast);
+        }, 1500); // Match animation duration
+    }
+
+    updateAge(change) {
+        this.age = Math.round(this.age + change);
+        this.ageDisplay.textContent = this.age;
+        
+        // Optional: Check for occupation changes based on age
+        if (this.age === 22) {
+            this.updateOccupation('College Graduate');
+        }
+    }
+
+    updateOccupation(newOccupation) {
+        this.occupation = newOccupation;
+        this.occupationDisplay.textContent = newOccupation;
+        // Show toast for occupation change
+        this.showToast(`New occupation: ${newOccupation}`, 'money-effect');
     }
 }
 

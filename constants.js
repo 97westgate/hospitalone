@@ -3,6 +3,8 @@ const GAME_CONSTANTS = {
     INITIAL_HEALTH: 50,
     INITIAL_MONEY: 1000,
     INITIAL_INSURANCE: 'none',
+    INITIAL_AGE: 18,
+    INITIAL_OCCUPATION: 'School',
     
     // Health thresholds
     MAX_HEALTH: 100,
@@ -66,6 +68,8 @@ const GAME_CONSTANTS = {
     // UI Elements
     UI: {
         LABELS: {
+            AGE: '👤',
+            OCCUPATION: '💼',
             INSURANCE: 'Insurance:',
             MONEY: '💰',
             HEALTH: '❤️',
@@ -86,6 +90,8 @@ const GAME_CONSTANTS = {
             }
         ],
         INITIAL_VALUES: {
+            AGE: '18',
+            OCCUPATION: 'School',
             INSURANCE: 'None',
             MONEY: '$1000',
             HEALTH: '50'
