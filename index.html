@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Mafia</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="toaster-container"></div>
+    <div class="game-container">
+        <div class="stats">
+            <div class="insurance-bar">
+                <div class="insurance-label"></div>
+                <div class="insurance-value" id="insuranceValue"></div>
+            </div>
+            <div class="money-bar">
+                <div class="money-label"></div>
+                <div class="money-value" id="moneyValue"></div>
+                <div class="money-bar-inner" id="moneyBar"></div>
+            </div>
+            <div class="health-bar">
+                <div class="health-label"></div>
+                <div class="health-value" id="healthValue"></div>
+                <div class="health-bar-inner" id="healthBar"></div>
+            </div>
+        </div>
+        <div class="money-actions">
+            <h3></h3>
+            <div class="money-buttons"></div>
+        </div>
+        <div class="scenario-container">
+            <div id="scenario" class="scenario-text"></div>
+            <div class="choices">
+                <button id="choiceA" class="choice-btn"></button>
+                <button id="choiceB" class="choice-btn"></button>
+                <button id="choiceC" class="choice-btn"></button>
+            </div>
+        </div>
+    </div>
+    <script src="constants.js"></script>
+    <script src="scenarios.js"></script>
+    <script src="game.js"></script>
+</body>
+</html> 

@@ -1,0 +1,262 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #2c3e50;
+    font-family: Arial, sans-serif;
+    color: #ecf0f1;
+}
+
+.game-container {
+    width: 600px;
+    padding: 20px;
+    background: linear-gradient(to bottom, #2c3e50, #1abc9c);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.stats {
+    margin-bottom: 20px;
+}
+
+.health-bar {
+    background-color: #2c3e50;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.health-label {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.health-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2ecc71;
+}
+
+.health-bar-inner {
+    height: 20px;
+    background-color: #2ecc71;
+    width: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease-in-out;
+    transform-origin: top;
+}
+
+.scenario-container {
+    background-color: #2c3e50;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.scenario-text {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    white-space: pre-wrap;
+    overflow: hidden;
+    position: relative;
+}
+
+.choices {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.choice-btn {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    opacity: 0;  /* Start hidden */
+}
+
+.choice-btn:hover {
+    background-color: #2980b9;
+}
+
+.money-bar {
+    background-color: #2c3e50;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.money-label {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.money-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #f1c40f;
+}
+
+.money-bar-inner {
+    height: 20px;
+    background-color: #f1c40f;
+    width: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease-in-out;
+    transform-origin: top;
+}
+
+.insurance-bar {
+    background-color: #2c3e50;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.insurance-label {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.insurance-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #9b59b6;
+}
+
+.money-actions {
+    background-color: #2c3e50;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.money-actions h3 {
+    color: #f1c40f;
+    margin-bottom: 10px;
+}
+
+.money-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.money-btn {
+    background-color: #f1c40f;
+    color: #2c3e50;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.money-btn:hover {
+    background-color: #f39c12;
+}
+
+.money-btn:disabled {
+    background-color: #7f8c8d;
+    cursor: not-allowed;
+}
+
+/* Add these animations */
+@keyframes drip {
+    0% { transform: scaleY(1); }
+    50% { transform: scaleY(0.98); }
+    100% { transform: scaleY(1); }
+}
+
+@keyframes flash {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Add these new classes */
+.dripping {
+    animation: drip 0.5s ease-in-out;
+}
+
+.flashing {
+    animation: flash 0.5s ease-in-out;
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: #ecf0f1 }
+}
+
+.typing {
+    display: inline-block;
+    overflow: hidden;
+    border-right: 2px solid #ecf0f1;
+    white-space: nowrap;
+    margin: 0;
+    animation: blink-caret 0.75s step-end infinite;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Add toaster styles */
+.toaster-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.toast {
+    background-color: #34495e;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    margin-top: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s;
+    opacity: 0;
+}
+
+.toast.health-effect {
+    border-left: 4px solid #2ecc71;
+}
+
+.toast.money-effect {
+    border-left: 4px solid #f1c40f;
+}
+
+.toast.warning {
+    border-left: 4px solid #e74c3c;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+} 
