@@ -3,21 +3,35 @@ const GAME_CONSTANTS = {
     INITIAL_HEALTH: 50,
     INITIAL_MONEY: 1000,
     INITIAL_INSURANCE: 'none',
-    INITIAL_AGE: 18,
-    INITIAL_OCCUPATION: 'School',
+    INITIAL_INTELLIGENCE: 50,
+    INITIAL_SOCIAL: 50,
+    INITIAL_LOOKS: 50,
+    INITIAL_EQ: 50,
+    INITIAL_MENTAL: 75,
     
     // Health thresholds
     MAX_HEALTH: 100,
     LOW_HEALTH_THRESHOLD: 30,
     MEDIUM_HEALTH_THRESHOLD: 60,
     
+    // Stat maximums
+    MAX_INTELLIGENCE: 100,
+    MAX_SOCIAL: 100,
+    MAX_LOOKS: 100,
+    MAX_EQ: 100,
+    MAX_MENTAL: 100,
+    
     // Colors
     COLORS: {
         GOOD_HEALTH: '#2ecc71',
         MEDIUM_HEALTH: '#f1c40f',
         LOW_HEALTH: '#e74c3c',
-        MONEY: '#f1c40f',
-        INSURANCE: '#9b59b6'
+        INSURANCE: '#9b59b6',
+        INTELLIGENCE: '#3498db',
+        SOCIAL: '#e67e22',
+        LOOKS: '#e84393',
+        EQ: '#f1c40f',
+        MENTAL: '#9b59b6'
     },
     
     // Insurance types
@@ -62,6 +76,14 @@ const GAME_CONSTANTS = {
             BASE: 100,
             HEALTH_COST: 10,
             COOLDOWN: 1
+        },
+        WORK: {
+            BASE: 80,
+            HEALTH_COST: 2,
+        },
+        GYM: {
+            MONEY_COST: 30,
+            HEALTH_GAIN: 10
         }
     },
     
@@ -73,7 +95,7 @@ const GAME_CONSTANTS = {
             INSURANCE: 'Insurance:',
             MONEY: '💰',
             HEALTH: '❤️',
-            NEED_MONEY: 'Need Money?'
+            NEED_MONEY: 'Actions:'
         },
         MONEY_ACTIONS: [
             {
@@ -87,10 +109,18 @@ const GAME_CONSTANTS = {
             {
                 id: 'crowdfunding',
                 text: 'Try Crowdfunding'
+            },
+            {
+                id: 'work',
+                text: 'Work Shift'
+            },
+            {
+                id: 'gym',
+                text: 'Go to Gym (-$30, +10 Health)'
             }
         ],
         INITIAL_VALUES: {
-            AGE: '18',
+            AGE: '25',
             OCCUPATION: 'School',
             INSURANCE: 'None',
             MONEY: '$1000',

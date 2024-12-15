@@ -6,14 +6,7 @@ class Game {
         // Initialize UI elements with constants
         this.initializeUI();
         
-        // Set initial stats
-        this.health = GAME_CONSTANTS.INITIAL_HEALTH;
-        this.money = GAME_CONSTANTS.INITIAL_MONEY;
-        this.insurance = GAME_CONSTANTS.INITIAL_INSURANCE;
         this.hasChosenInsurance = false;
-        
-        // Set initial health bar width
-        this.healthBar.style.width = `${GAME_CONSTANTS.INITIAL_HEALTH}%`;
         
         // Set up event listeners
         this.setupEventListeners();
@@ -34,7 +27,7 @@ class Game {
         // Start decay after insurance choice
         this.startDecay();
         
-        // Set up insurance choice scenario
+        // Set up initial insurance choice scenario
         this.currentScenario = {
             text: "You're offered health insurance at work. Which plan do you choose?",
             choiceA: { 
@@ -88,26 +81,85 @@ class Game {
         this.choiceABtn.disabled = true;
         this.choiceBBtn.disabled = true;
         this.choiceCBtn.disabled = true;
-        
-        // Add age initialization
-        this.age = GAME_CONSTANTS.INITIAL_AGE;
-        
-        // Add occupation initialization
-        this.occupation = GAME_CONSTANTS.INITIAL_OCCUPATION;
     }
 
     initializeElements() {
-        this.healthDisplay = document.getElementById('healthValue');
-        this.healthBar = document.getElementById('healthBar');
-        this.moneyDisplay = document.getElementById('moneyValue');
-        this.moneyBar = document.getElementById('moneyBar');
+        // Define all stats with their properties
+        const stats = {
+            money: { 
+                initial: GAME_CONSTANTS.INITIAL_MONEY,
+                format: (value) => `$${value.toLocaleString()}`,
+                barWidth: (value) => `${(value / GAME_CONSTANTS.INITIAL_MONEY) * 100}%`
+            },
+            health: { 
+                initial: GAME_CONSTANTS.INITIAL_HEALTH,
+                format: (value) => `${value}%`,
+                barWidth: (value) => `${value}%`
+            },
+            intelligence: { 
+                initial: GAME_CONSTANTS.INITIAL_INTELLIGENCE,
+                format: (value) => `${value}%`,
+                barWidth: (value) => `${value}%`
+            },
+            social: { 
+                initial: GAME_CONSTANTS.INITIAL_SOCIAL,
+                format: (value) => `${value}%`,
+                barWidth: (value) => `${value}%`
+            },
+            looks: { 
+                initial: GAME_CONSTANTS.INITIAL_LOOKS,
+                format: (value) => `${value}%`,
+                barWidth: (value) => `${value}%`
+            },
+            eq: { 
+                initial: GAME_CONSTANTS.INITIAL_EQ,
+                format: (value) => `${value}%`,
+                barWidth: (value) => `${value}%`
+            },
+            mental: { 
+                initial: GAME_CONSTANTS.INITIAL_MENTAL,
+                format: (value) => `${value}%`,
+                barWidth: (value) => `${value}%`
+            }
+        };
+        
+        // Initialize all stats and their displays
+        for (const [stat, config] of Object.entries(stats)) {
+            // Get DOM elements
+            this[`${stat}Display`] = document.getElementById(`${stat}Value`);
+            this[`${stat}Bar`] = document.getElementById(`${stat}Bar`);
+            
+            // Set initial value
+            this[stat] = config.initial;
+            
+            // Update display
+            if (this[`${stat}Display`]) {
+                this[`${stat}Display`].textContent = config.format(this[stat]);
+            }
+            if (this[`${stat}Bar`]) {
+                this[`${stat}Bar`].style.width = config.barWidth(this[stat]);
+            }
+        }
+        
+        // Initialize non-stat elements
+        this.age = 25;
+        this.occupation = GAME_CONSTANTS.UI.INITIAL_VALUES.OCCUPATION;
+        this.insurance = GAME_CONSTANTS.INITIAL_INSURANCE;
+        
+        // Get DOM elements for non-stat displays
+        this.ageDisplay = document.getElementById('ageValue');
+        this.occupationDisplay = document.getElementById('occupationValue');
+        this.insuranceDisplay = document.getElementById('insuranceValue');
         this.scenarioText = document.getElementById('scenario');
         this.choiceABtn = document.getElementById('choiceA');
         this.choiceBBtn = document.getElementById('choiceB');
         this.choiceCBtn = document.getElementById('choiceC');
-        this.insuranceDisplay = document.getElementById('insuranceValue');
-        this.ageDisplay = document.getElementById('ageValue');
-        this.occupationDisplay = document.getElementById('occupationValue');
+        this.newsFeed = document.getElementById('newsFeed');
+        
+        // Update non-stat displays
+        if (this.ageDisplay) this.ageDisplay.textContent = this.age;
+        if (this.occupationDisplay) this.occupationDisplay.textContent = this.occupation;
+        if (this.insuranceDisplay) this.insuranceDisplay.textContent = this.insurance;
     }
 
     setupEventListeners() {
@@ -117,11 +169,10 @@ class Game {
     }
 
     updateHealth(change, isDecay = false) {
-        const oldHealth = this.health;
-        this.health = Math.max(0, Math.min(GAME_CONSTANTS.MAX_HEALTH, this.health + change));
+        this.health = Math.round(Math.max(0, Math.min(GAME_CONSTANTS.MAX_HEALTH, this.health + change)));
         
-        // Update display
-        this.healthDisplay.textContent = this.health;
+        // Update display with rounded number
+        this.healthDisplay.textContent = `${Math.round(this.health)}%`;
         this.healthBar.style.width = `${this.health}%`;
         
         // Add drip animation if it's a decrease
@@ -155,25 +206,16 @@ class Game {
         }
     }
 
-    updateMoney(change, isDecay = false) {
-        const oldMoney = this.money;
+    updateMoney(change) {
+        if (!this.moneyDisplay) return; // Guard clause
+        
         this.money = Math.max(0, this.money + change);
+        this.moneyDisplay.textContent = `$${this.money.toLocaleString()}`;
         
-        // Update display
-        this.moneyDisplay.textContent = this.money;
-        const moneyPercentage = Math.min(100, (this.money / GAME_CONSTANTS.INITIAL_MONEY) * 100);
-        this.moneyBar.style.width = `${moneyPercentage}%`;
-        
-        // Add drip animation if it's a decrease
-        if (change < 0) {
-            this.moneyBar.classList.add('dripping');
-            setTimeout(() => this.moneyBar.classList.remove('dripping'), 500);
-            
-            // Add flash for decay
-            if (isDecay) {
-                this.moneyDisplay.classList.add('flashing');
-                setTimeout(() => this.moneyDisplay.classList.remove('flashing'), 500);
-            }
+        // Update money bar width based on percentage of initial money
+        if (this.moneyBar) {
+            const percentage = Math.min((this.money / GAME_CONSTANTS.INITIAL_MONEY) * 100, 100);
+            this.moneyBar.style.width = `${percentage}%`;
         }
         
         // Check for game over
@@ -202,6 +244,17 @@ class Game {
             effect = choice === 'A' ? this.currentScenario.choiceA : 
                     choice === 'B' ? this.currentScenario.choiceB : 
                     this.currentScenario.choiceC;
+        }
+        
+        console.log('Current scenario:', this.currentScenario);
+        console.log('Selected effect:', effect);
+        
+        // Generate news item based on choice and scenario
+        const newsText = this.generateNewsText(this.currentScenario.text, effect, choice);
+        console.log('Generated news text:', newsText);
+        if (newsText) {
+            console.log('Adding news item to feed');
+            this.addNewsItem(newsText);
         }
         
         // Handle insurance effect first
@@ -248,6 +301,47 @@ class Game {
         
         // Continue with next scenario
         this.nextScenario();
+    }
+
+    generateNewsText(scenarioText, effect, choice) {
+        // Don't generate news for insurance choice
+        if (effect.insuranceEffect) return null;
+
+        let outcome = '';
+        const healthChange = (effect.healthEffect[0] + effect.healthEffect[1]) / 2;
+        const moneyChange = (effect.moneyEffect[0] + effect.moneyEffect[1]) / 2;
+
+        if (healthChange > 0) {
+            outcome = 'You feel better';
+        } else if (healthChange < 0) {
+            outcome = 'You feel worse';
+        }
+
+        if (moneyChange !== 0) {
+            outcome += moneyChange > 0 ? ' and earned $' + Math.abs(Math.round(moneyChange)) : 
+                                       ' and spent $' + Math.abs(Math.round(moneyChange));
+        }
+
+        // Remove the question mark if present
+        const situation = scenarioText.replace(/\?$/, '').trim();
+        return `📰 ${situation} You ${effect.text.toLowerCase()}. ${outcome}.`;
+    }
+
+    addNewsItem(text) {
+        const newsItem = document.createElement('div');
+        newsItem.className = 'news-item';
+        newsItem.textContent = text;
+
+        this.newsFeed.style.display = 'block';
+        this.newsFeed.classList.add('visible');
+        
+        this.newsFeed.appendChild(newsItem);
+        console.log('News feed children:', this.newsFeed.children.length);
+
+        // Keep only last 3 news items
+        while (this.newsFeed.children.length > 3) {
+            this.newsFeed.removeChild(this.newsFeed.firstChild);
+        }
     }
 
     nextScenario() {
@@ -339,11 +433,15 @@ class Game {
         this.sellPlasmaBtn = document.getElementById('sellPlasma');
         this.medicalTrialBtn = document.getElementById('medicalTrial');
         this.crowdfundingBtn = document.getElementById('crowdfunding');
+        this.workBtn = document.getElementById('work');
+        this.gymBtn = document.getElementById('gym');
 
         // Add event listeners
         this.sellPlasmaBtn.addEventListener('click', () => this.sellPlasma());
         this.medicalTrialBtn.addEventListener('click', () => this.participateInTrial());
         this.crowdfundingBtn.addEventListener('click', () => this.startCrowdfunding());
+        this.workBtn.addEventListener('click', () => this.work());
+        this.gymBtn.addEventListener('click', () => this.goToGym());
     }
 
     sellPlasma() {
@@ -393,15 +491,35 @@ class Game {
         setTimeout(() => this.crowdfundingBtn.disabled = false, 14 * 24 * 60 * 60 * 1000);
     }
 
+    work() {
+        this.updateHealth(-GAME_CONSTANTS.EARNINGS.WORK.HEALTH_COST);
+        this.updateMoney(GAME_CONSTANTS.EARNINGS.WORK.BASE);
+        this.showToast(`Worked shift: -${GAME_CONSTANTS.EARNINGS.WORK.HEALTH_COST} Health, +$${GAME_CONSTANTS.EARNINGS.WORK.BASE}`, 'money-effect', this.workBtn);
+    }
+
+    goToGym() {
+        if (this.money < GAME_CONSTANTS.EARNINGS.GYM.MONEY_COST) {
+            this.showToast("Not enough money for gym!", 'warning', this.gymBtn);
+            return;
+        }
+        
+        this.updateMoney(-GAME_CONSTANTS.EARNINGS.GYM.MONEY_COST);
+        this.updateHealth(GAME_CONSTANTS.EARNINGS.GYM.HEALTH_GAIN);
+        this.showToast(
+            `Went to gym: -$${GAME_CONSTANTS.EARNINGS.GYM.MONEY_COST}, +${GAME_CONSTANTS.EARNINGS.GYM.HEALTH_GAIN} Health`, 
+            'health-effect', 
+            this.gymBtn
+        );
+    }
+
     startDecay() {
         if (this.decayStarted) return;
         
         // Base decay interval is 500ms
         const updateHealthDecay = () => {
-            // Calculate health decay rate based on age
-            // Every 10 years after 18 increases decay rate by 20%
-            const ageEffect = Math.max(0, this.age - 18) / 10;
-            const healthDecayAmount = -1 * (1 + (ageEffect * 0.2));
+            // Every 10 years after 25 increases decay rate by 20%, but start with a smaller base decay
+            const ageEffect = Math.max(0, this.age - 25) / 10;
+            const healthDecayAmount = -0.2 * (1 + (ageEffect * 0.5)); // Reduced from -1 to -0.2
             
             this.updateHealth(healthDecayAmount, true);
         };
@@ -412,14 +530,14 @@ class Game {
             this.updateMoney(-1, true);
         }, 1000);
 
-        this.ageDecayInterval = setInterval(() => {
-            this.updateAge(+1);
-            // Recalculate health decay when age changes
-            if (this.healthDecayInterval) {
-                clearInterval(this.healthDecayInterval);
-                this.healthDecayInterval = setInterval(updateHealthDecay, 500);
-            }
-        }, 10000);
+        // this.ageDecayInterval = setInterval(() => {
+        //     this.updateAge(+1);
+        //     // Recalculate health decay when age changes
+        //     if (this.healthDecayInterval) {
+        //         clearInterval(this.healthDecayInterval);
+        //         this.healthDecayInterval = setInterval(updateHealthDecay, 500);
+        //     }
+        // }, 10000);
         
         this.decayStarted = true;
     }
@@ -445,18 +563,10 @@ class Game {
     }
 
     initializeUI() {
-        // Set labels
-        document.querySelector('.insurance-label').textContent = GAME_CONSTANTS.UI.LABELS.INSURANCE;
-        document.querySelector('.money-label').textContent = GAME_CONSTANTS.UI.LABELS.MONEY;
-        document.querySelector('.health-label').textContent = GAME_CONSTANTS.UI.LABELS.HEALTH;
+        document.querySelector('.insurance-label').textContent = 'Insurance:';
         document.querySelector('.money-actions h3').textContent = GAME_CONSTANTS.UI.LABELS.NEED_MONEY;
 
-        // Set initial values
-        this.insuranceDisplay.textContent = GAME_CONSTANTS.UI.INITIAL_VALUES.INSURANCE;
-        this.moneyDisplay.textContent = GAME_CONSTANTS.UI.INITIAL_VALUES.MONEY;
-        this.healthDisplay.textContent = GAME_CONSTANTS.UI.INITIAL_VALUES.HEALTH;
-
-        // Create money action buttons
+        // Initialize money buttons
         const moneyButtonsContainer = document.querySelector('.money-buttons');
         GAME_CONSTANTS.UI.MONEY_ACTIONS.forEach(action => {
             const button = document.createElement('button');
@@ -466,15 +576,7 @@ class Game {
             moneyButtonsContainer.appendChild(button);
         });
 
-        // Add age label
-        document.querySelector('.age-label').textContent = GAME_CONSTANTS.UI.LABELS.AGE;
-        
-        // Set initial age value
-        this.ageDisplay.textContent = GAME_CONSTANTS.UI.INITIAL_VALUES.AGE;
-        
-        // Add occupation label and value
-        document.querySelector('.occupation-label').textContent = GAME_CONSTANTS.UI.LABELS.OCCUPATION;
-        this.occupationDisplay.textContent = GAME_CONSTANTS.UI.INITIAL_VALUES.OCCUPATION;
+        this.insuranceDisplay.textContent = GAME_CONSTANTS.UI.INITIAL_VALUES.INSURANCE;
     }
 
     showToast(message, type = 'info', button = null) {
@@ -502,7 +604,44 @@ class Game {
         this.age = Math.round(this.age + change);
         this.ageDisplay.textContent = this.age;
         
-        // Optional: Check for occupation changes based on age
+        // Check for age-specific scenarios
+        if (this.age === 26) {
+            // Force the 26-year-old insurance scenario
+            this.currentScenario = AGE_SPECIFIC_SCENARIOS[26];
+            
+            // Clear current choices
+            this.choiceABtn.style.display = 'none';
+            this.choiceBBtn.style.display = 'none';
+            this.choiceCBtn.style.display = 'none';
+            
+            // Type out the new scenario
+            this.typeWriter(this.currentScenario.text, this.scenarioText, () => {
+                // Show buttons one by one with delay
+                this.choiceABtn.textContent = this.currentScenario.choiceA.text;
+                this.choiceBBtn.textContent = this.currentScenario.choiceB.text;
+                this.choiceCBtn.textContent = this.currentScenario.choiceC.text;
+                
+                this.choiceABtn.style.display = 'block';
+                setTimeout(() => {
+                    this.choiceABtn.classList.add('fade-in');
+                    this.choiceABtn.disabled = false;
+                    
+                    setTimeout(() => {
+                        this.choiceBBtn.style.display = 'block';
+                        this.choiceBBtn.classList.add('fade-in');
+                        this.choiceBBtn.disabled = false;
+                        
+                        setTimeout(() => {
+                            this.choiceCBtn.style.display = 'block';
+                            this.choiceCBtn.classList.add('fade-in');
+                            this.choiceCBtn.disabled = false;
+                        }, 200);
+                    }, 200);
+                }, 200);
+            });
+        }
+        
+        // Optional: Check for other occupation changes based on age
         if (this.age === 22) {
             this.updateOccupation('College Graduate');
         }
@@ -514,9 +653,114 @@ class Game {
         // Show toast for occupation change
         this.showToast(`New occupation: ${newOccupation}`, 'money-effect');
     }
+
+    updateLearning(change) {
+        this.learning = Math.max(0, Math.min(GAME_CONSTANTS.MAX_LEARNING, this.learning + change));
+        this.learningDisplay.textContent = `${Math.round(this.learning)}%`;
+        this.learningBar.style.width = `${this.learning}%`;
+    }
+
+    updateAppearance(change) {
+        this.appearance = Math.max(0, Math.min(GAME_CONSTANTS.MAX_APPEARANCE, this.appearance + change));
+        this.appearanceDisplay.textContent = `${Math.round(this.appearance)}%`;
+        this.appearanceBar.style.width = `${this.appearance}%`;
+    }
+
+    updateMentalHealth(change, isDecay = false) {
+        const oldMentalHealth = this.mentalHealth;
+        this.mentalHealth = Math.round(Math.max(0, Math.min(GAME_CONSTANTS.MAX_MENTAL_HEALTH, this.mentalHealth + change)));
+        
+        // Update display with rounded number
+        this.mentalHealthDisplay.textContent = `${Math.round(this.mentalHealth)}%`;
+        this.mentalHealthBar.style.width = `${this.mentalHealth}%`;
+        
+        // Add drip animation if it's a decrease
+        if (change < 0) {
+            this.mentalHealthBar.classList.add('dripping');
+            setTimeout(() => this.mentalHealthBar.classList.remove('dripping'), 500);
+            
+            // Add flash for decay
+            if (isDecay) {
+                this.mentalHealthDisplay.classList.add('flashing');
+                setTimeout(() => this.mentalHealthDisplay.classList.remove('flashing'), 500);
+            }
+        }
+        
+        // Update color based on mental health level
+        let mentalHealthColor;
+        if (this.mentalHealth < GAME_CONSTANTS.LOW_MENTAL_HEALTH_THRESHOLD) {
+            mentalHealthColor = GAME_CONSTANTS.COLORS.LOW_HEALTH;
+        } else if (this.mentalHealth < GAME_CONSTANTS.MEDIUM_MENTAL_HEALTH_THRESHOLD) {
+            mentalHealthColor = GAME_CONSTANTS.COLORS.MEDIUM_HEALTH;
+        } else {
+            mentalHealthColor = GAME_CONSTANTS.COLORS.MENTAL_HEALTH;
+        }
+        
+        this.mentalHealthBar.style.backgroundColor = mentalHealthColor;
+        this.mentalHealthDisplay.style.color = mentalHealthColor;
+    }
+
+    updateIntelligence(change) {
+        this.intelligence = Math.max(0, Math.min(GAME_CONSTANTS.MAX_INTELLIGENCE, this.intelligence + change));
+        this.intelligenceDisplay.textContent = `${Math.round(this.intelligence)}%`;
+        this.intelligenceBar.style.width = `${this.intelligence}%`;
+    }
+
+    updateSocial(change) {
+        this.social = Math.max(0, Math.min(GAME_CONSTANTS.MAX_SOCIAL, this.social + change));
+        this.socialDisplay.textContent = `${Math.round(this.social)}%`;
+        this.socialBar.style.width = `${this.social}%`;
+    }
+
+    updateLooks(change) {
+        this.looks = Math.max(0, Math.min(GAME_CONSTANTS.MAX_LOOKS, this.looks + change));
+        this.looksDisplay.textContent = `${Math.round(this.looks)}%`;
+        this.looksBar.style.width = `${this.looks}%`;
+    }
+
+    updateEQ(change) {
+        this.eq = Math.max(0, Math.min(GAME_CONSTANTS.MAX_EQ, this.eq + change));
+        this.eqDisplay.textContent = `${Math.round(this.eq)}%`;
+        this.eqBar.style.width = `${this.eq}%`;
+    }
+
+    updateMental(change) {
+        this.mental = Math.max(0, Math.min(GAME_CONSTANTS.MAX_MENTAL, this.mental + change));
+        this.mentalDisplay.textContent = `${Math.round(this.mental)}%`;
+        this.mentalBar.style.width = `${this.mental}%`;
+    }
+
+    verifyElements() {
+        const requiredElements = {
+            'healthDisplay': this.healthDisplay,
+            'healthBar': this.healthBar,
+            'intelligenceDisplay': this.intelligenceDisplay,
+            'intelligenceBar': this.intelligenceBar,
+            'socialDisplay': this.socialDisplay,
+            'socialBar': this.socialBar,
+            'looksDisplay': this.looksDisplay,
+            'looksBar': this.looksBar,
+            'eqDisplay': this.eqDisplay,
+            'eqBar': this.eqBar,
+            'mentalDisplay': this.mentalDisplay,
+            'mentalBar': this.mentalBar,
+            'moneyDisplay': this.moneyDisplay,
+            'moneyBar': this.moneyBar
+        };
+
+        for (const [name, element] of Object.entries(requiredElements)) {
+            if (!element) {
+                console.error(`Missing required element: ${name}`);
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 // Add the event listener outside the class
 window.addEventListener('load', () => {
-    new Game();
+    new LoadScreen(() => {
+        new Game();
+    });
 }); 

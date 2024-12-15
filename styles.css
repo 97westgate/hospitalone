@@ -23,34 +23,63 @@ body {
 }
 
 .stats {
-    margin-bottom: 20px;
+    width: 100%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    margin-bottom: 10px;
 }
 
-.health-bar {
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0;
+    gap: 20px;
+}
+
+.stats-row > div {
+    flex: 1;
+}
+
+.stats-row > div {
     background-color: #2c3e50;
-    padding: 10px;
+    padding: 5px 8px;
     border-radius: 5px;
+    flex: 1;
+    margin: 2px;
 }
 
-.health-label {
+.stats-row .label {
     font-size: 18px;
     margin-bottom: 5px;
 }
 
-.health-value {
-    font-size: 24px;
+.stats-row .value {
+    font-size: 18px;
     font-weight: bold;
-    color: #2ecc71;
 }
 
-.health-bar-inner {
-    height: 20px;
-    background-color: #2ecc71;
+.stats-row > div > div:last-child {
+    height: 12px;
     width: 100%;
     border-radius: 3px;
     transition: width 0.3s ease-in-out;
-    transform-origin: top;
 }
+
+.intelligence-bar-inner { background-color: #3498db; }
+.social-bar-inner { background-color: #e67e22; }
+.looks-bar-inner { background-color: #e84393; }
+.eq-bar-inner { background-color: #f1c40f; }
+.health-bar-inner { background-color: #2ecc71; }
+.mental-bar-inner { background-color: #9b59b6; }
+
+.intelligence-value { color: #3498db; }
+.social-value { color: #e67e22; }
+.looks-value { color: #e84393; }
+.eq-value { color: #f1c40f; }
+.health-value { color: #2ecc71; }
+.mental-value { color: #9b59b6; }
 
 .scenario-container {
     background-color: #2c3e50;
@@ -93,9 +122,9 @@ body {
 
 .money-bar {
     background-color: #2c3e50;
-    padding: 10px;
+    padding: 5px 8px;
     border-radius: 5px;
-    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 .money-label {
@@ -104,13 +133,13 @@ body {
 }
 
 .money-value {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: bold;
     color: #f1c40f;
 }
 
 .money-bar-inner {
-    height: 20px;
+    height: 12px;
     background-color: #f1c40f;
     width: 100%;
     border-radius: 3px;
@@ -119,10 +148,12 @@ body {
 }
 
 .insurance-bar {
-    background-color: #2c3e50;
-    padding: 10px;
+    margin-bottom: 5px;
+    font-size: 1.2em;
+    text-align: center;
+    padding: 5px;
+    background: rgba(155, 89, 182, 0.1);
     border-radius: 5px;
-    margin-top: 10px;
 }
 
 .insurance-label {
@@ -131,7 +162,7 @@ body {
 }
 
 .insurance-value {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: bold;
     color: #9b59b6;
 }
@@ -305,5 +336,123 @@ body {
     font-size: 24px;
     font-weight: bold;
     color: #e67e22;  /* Orange color for occupation */
+}
+
+.load-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.load-screen-text {
+    color: #fff;
+    font-size: 2em;
+    font-family: monospace;
+}
+
+.disintegrate {
+    display: inline-block;
+    animation: fadeUpAndDisappear 1s forwards;
+}
+
+@keyframes fadeUpAndDisappear {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+    }
+}
+
+.news-feed {
+    margin-bottom: 20px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.news-item {
+    margin-bottom: 10px;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #ecf0f1;
+    animation: slideUp 0.5s ease-out forwards;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.money-bar-inner,
+.health-bar-inner,
+.learning-bar-inner,
+.appearance-bar-inner {
+    height: 20px;
+    width: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease-in-out;
+    transform-origin: top;
+}
+
+.learning-bar-inner {
+    background-color: #3498db;
+}
+
+.appearance-bar-inner {
+    background-color: #e84393;
+}
+
+.learning-value,
+.appearance-value {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.learning-value {
+    color: #3498db;
+}
+
+.appearance-value {
+    color: #e84393;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    padding: 5px 8px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+.age-display, .occupation-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.age-label, .occupation-label {
+    font-size: 1.2em;
+}
+
+.age-value, .occupation-value {
+    font-size: 1.1em;
+    color: #ecf0f1;
 }
  

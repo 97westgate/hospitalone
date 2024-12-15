@@ -10,27 +10,60 @@
     <div class="toaster-container"></div>
     <div class="game-container">
         <div class="stats">
-            <div class="age-bar">
-                <div class="age-label"></div>
-                <div class="age-value" id="ageValue"></div>
+            <div class="info-row">
+                <div class="age-display">
+                    <div class="age-label">👤</div>
+                    <div class="age-value" id="ageValue">25</div>
+                </div>
+                <div class="occupation-display">
+                    <div class="occupation-label">💼</div>
+                    <div class="occupation-value" id="occupationValue">Software Engineer</div>
+                </div>
             </div>
-            <div class="occupation-bar">
-                <div class="occupation-label"></div>
-                <div class="occupation-value" id="occupationValue"></div>
+            <div class="money-bar">
+                <div class="money-label">💰</div>
+                <div class="money-value" id="moneyValue">$1000</div>
+                <div class="money-bar-inner" id="moneyBar"></div>
             </div>
             <div class="insurance-bar">
                 <div class="insurance-label"></div>
                 <div class="insurance-value" id="insuranceValue"></div>
             </div>
-            <div class="money-bar">
-                <div class="money-label"></div>
-                <div class="money-value" id="moneyValue"></div>
-                <div class="money-bar-inner" id="moneyBar"></div>
+            <div class="stats-row">
+                <div class="intelligence-bar">
+                    <div class="intelligence-label">🧠</div>
+                    <div class="intelligence-value" id="intelligenceValue">50%</div>
+                    <div class="intelligence-bar-inner" id="intelligenceBar"></div>
+                </div>
+                <div class="social-bar">
+                    <div class="social-label">👥</div>
+                    <div class="social-value" id="socialValue">50%</div>
+                    <div class="social-bar-inner" id="socialBar"></div>
+                </div>
             </div>
-            <div class="health-bar">
-                <div class="health-label"></div>
-                <div class="health-value" id="healthValue"></div>
-                <div class="health-bar-inner" id="healthBar"></div>
+            <div class="stats-row">
+                <div class="looks-bar">
+                    <div class="looks-label">✨</div>
+                    <div class="looks-value" id="looksValue">50%</div>
+                    <div class="looks-bar-inner" id="looksBar"></div>
+                </div>
+                <div class="eq-bar">
+                    <div class="eq-label">💝</div>
+                    <div class="eq-value" id="eqValue">50%</div>
+                    <div class="eq-bar-inner" id="eqBar"></div>
+                </div>
+            </div>
+            <div class="stats-row">
+                <div class="health-bar">
+                    <div class="health-label">❤️</div>
+                    <div class="health-value" id="healthValue">50%</div>
+                    <div class="health-bar-inner" id="healthBar"></div>
+                </div>
+                <div class="mental-bar">
+                    <div class="mental-label">🎭</div>
+                    <div class="mental-value" id="mentalValue">75%</div>
+                    <div class="mental-bar-inner" id="mentalBar"></div>
+                </div>
             </div>
         </div>
         <div class="money-actions">
@@ -38,6 +71,7 @@
             <div class="money-buttons"></div>
         </div>
         <div class="scenario-container">
+            <div id="newsFeed" class="news-feed"></div>
             <div id="scenario" class="scenario-text"></div>
             <div class="choices">
                 <button id="choiceA" class="choice-btn"></button>
@@ -47,6 +81,7 @@
         </div>
     </div>
     <script src="constants.js"></script>
+    <script src="loadScreen.js"></script>
     <script src="scenarios.js"></script>
     <script src="game.js"></script>
 </body>
